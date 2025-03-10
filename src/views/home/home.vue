@@ -29,7 +29,7 @@
       </el-card>
     </el-col>
     <el-col :span="16" class="right">
-      <div class="count">
+      <div class="count" v-if="countData.length != 0">
         <el-card
           :body-style="{ display: 'flex', padding: 0 }"
           v-for="item in countData"
@@ -125,6 +125,7 @@ const getTable = async () => {
 // 获取count数据
 const getCount = async () => {
   const res = await getCountData();
+  console.log("res  ----->  ", res);
   countData.value = res.data;
 };
 // 获取chart数据
@@ -177,13 +178,13 @@ const getChart = async () => {
 };
 
 onMounted(() => {
-  getTable();
-  getCount();
-  getChart();
+  // getTable();
+  // getCount();
+  // getChart();
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .home {
   height: 100%;
   // overflow: hidden;

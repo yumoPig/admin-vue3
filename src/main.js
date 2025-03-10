@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-import "@/assets/less/index.less"; //引入默认样式
+import "@/assets/scss/index.scss"; //引入默认样式
 import * as ElementPlusIconsVue from "@element-plus/icons-vue"; //引入所有图标
 
 import router from "./router"; // 路由
@@ -14,11 +14,8 @@ import { useAllDataStore } from "@/store/index.js";
 
 import "@/api/mock.js"; // 引入mock
 
-// import api from "@/api/api.js";// 全局注册api
-
 const app = createApp(App);
 
-// app.config.globalProperties.$api = api;//  挂载api
 app.use(pinia); // 使用pinia
 const store = useAllDataStore();
 store.addMenu(router); // 添加动态路由

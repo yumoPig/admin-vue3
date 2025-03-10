@@ -47,12 +47,12 @@ import UserEdit from "./userEdit.vue";
 
 const userData = ref([]);
 const columns = ref([
-  { label: "姓名", prop: "name", width: 150, fixed: "left" },
+  { label: "姓名", prop: "name", width: 150 },
   { label: "年龄", prop: "age", width: 150 },
   { label: "性别", width: 150, slot: "Sex" },
   { label: "出生日期", prop: "birth", width: 250 },
   { label: "地址", prop: "addr", width: 350 },
-  { label: "操作", width: 250, fixed: "right", slot: "Operation" },
+  { label: "操作", width: 250, slot: "Operation" },
 ]);
 const loading = ref(false);
 const total = ref(10);
@@ -131,7 +131,7 @@ watch(showUserEdit, (newVal) => {
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .user_header {
   display: flex;
   justify-content: space-between;

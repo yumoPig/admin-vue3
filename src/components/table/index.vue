@@ -101,7 +101,7 @@ watch(
 );
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 :deep(.tableHeader) {
   background-color: #f5f7fa !important;
 }

@@ -62,4 +62,4 @@ const props = defineProps({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="scss" scoped></style>

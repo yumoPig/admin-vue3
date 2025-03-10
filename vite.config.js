@@ -81,5 +81,13 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
+    // 屏蔽main.js中的scss警告
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern",
+        },
+      },
+    },
   };
 });

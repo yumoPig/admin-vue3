@@ -7,24 +7,8 @@ const routes = [
     path: "/",
     name: "index",
     component: () => import("@/layout/index.vue"),
-    redirect: "/home", // 重定向
-    // children: [
-    //   {
-    //     path: "home",
-    //     name: "home",
-    //     component: () => import("@/views/home/home.vue"),
-    //   },
-    //   {
-    //     path: "mall",
-    //     name: "mall",
-    //     component: () => import("@/views/mall/mall.vue"),
-    //   },
-    //   {
-    //     path: "user",
-    //     name: "user",
-    //     component: () => import("@/views/user/user.vue"),
-    //   },
-    // ],
+    redirect: "/firstPage", // 重定向
+    children: [],
   },
   {
     path: "/login",
@@ -47,10 +31,19 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const module = import.meta.glob("../views/**/*.vue"); // 加载对应的模块
   const path = to.path.replace(/^\/+/, "");
-  const url = `../views/${path}/${path}.vue`; // 根据路径构造 URL
+  const componentName = path.split('/').pop();
+  // 检查是否存在匹配的组件文件
+  let componentExists = false;
+  for (const modulePath in module) {
+    if (modulePath.includes(`/${componentName}/${componentName}.vue`) || 
+        modulePath.endsWith(`/${componentName}.vue`)) {
+      componentExists = true;
+      break;
+    }
+  }
   const store = useAllDataStore();
 
-  if (!module[url]) return next("/error"); // 判断是否是路由
+  if (!componentExists && to.path !== "/login" && to.path !== "/" && to.path !== "/error") return next("/error"); // 判断是否是路由
   if (to.path !== "/login" && !store.token) return next("/login");
   if (!isRoute(to) && to.path !== "/error") return next("/error");
   next();

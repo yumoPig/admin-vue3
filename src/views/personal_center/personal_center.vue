@@ -1,5 +1,5 @@
 <template>
-  <div>商品管理</div>
+  <div>个人中心</div>
 </template>
 
 <script setup></script>

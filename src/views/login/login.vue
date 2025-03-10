@@ -2,10 +2,10 @@
   <div class="login">
     <div class="login_form">
       <el-form ref="formRef" :model="form" label-width="80px" :rules="rules">
-        <h2>欢迎登录</h2>
-        <el-form-item label="用户名" prop="username">
+        <h2>用户登录</h2>
+        <el-form-item label="用户名" prop="account">
           <el-input
-            v-model="form.username"
+            v-model="form.account"
             placeholder="请输入用户名"
           ></el-input>
         </el-form-item>
@@ -26,66 +26,74 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import { getMenu } from "@api/api";
+import { login, getAllMenu, getAdminUserData } from "@api/login";
 import { useAllDataStore } from "@/store/index.js";
 import { useRouter } from "vue-router";
 
 const form = reactive({
-  username: "",
+  account: "",
   password: "",
 });
 const formRef = ref(null);
 const rules = reactive({
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  account: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 });
 const store = useAllDataStore();
 const router = useRouter();
 
-const onSubmit = () => {
+const onSubmit = async () => {
   formRef.value.validate((valid) => {
     if (!valid) return ElMessage.error("请输入必填项！");
-
     let params = form;
-    getMenu(params).then((res) => {
-      if (res.code != 200) return ElMessage.error(res.data.message);
+    login(params)
+      .then((res) => {
+        if (res.code != 0) return ElMessage.error(res.message);
+        store.token = res.data.access_token;
+        store.userName = res.data.name;
+        getUserData();
+        getMenu();
+      })
+      .catch((err) => {
+        console.log("err  ----->  ", err);
+        ElMessage.error(err.message);
+      });
+  });
+};
+// 获取菜单栏
+const getMenu = async () => {
+  let res = await getAllMenu();
+  if (res.code != 0) return ElMessage.error(res.message);
+  let menuList = res.data,
+    path;
+  menuList.forEach((item) => {
+    item.path = item.front_url;
+    if (item.children) {
+      item.children.forEach((child) => {
+        child.path = child.front_url;
+      });
+    }
+  });
+  // 确保path是一个有效的路由路径
+  path = menuList[0];
+  store.updateMenuList(menuList);
+  store.addMenu(router);
+  store.resetTags(path);
+  // 使用path.path确保使用正确的路径进行导航
+  router.push(path.path || path.front_url);
+  // 重置表单
+  formRef.value.resetFields();
+};
 
-      let path = res.data.menuList[0];
-      store.updateMenuList(res.data.menuList);
-      store.token = res.data.token;
-      store.addMenu(router);
-      store.resetTags();
-      router.push(path);
-      formRef.value.resetFields();
-    });
+// 获取用户信息
+const getUserData = () => {
+  getAdminUserData().then((res) => {
+    if (res.code != 0) return ElMessage.error(res.message);
+    store.photo = res.data.photo;
   });
 };
 </script>
 
-<style lang="less" scoped>
-.login {
-  width: 100%;
-  height: 100%;
-  background: url("../../assets/img/bg.png") no-repeat;
-  background-size: cover;
-}
-.login_form {
-  position: fixed;
-  top: 30%;
-  left: 20%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  padding: 20px;
-  border: 1px solid #eaeaea;
-  border-radius: 5px;
-  box-shadow: 0 0 25px #cacaca;
-  background-color: #fff;
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-}
-.el-button {
-  width: 100%;
-}
+<style lang="scss" scoped>
+@use "./login.scss";
 </style>

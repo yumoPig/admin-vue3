@@ -49,11 +49,11 @@ export default {
               icon: "location",
               children: [
                 {
-                  path: "/page1",
-                  name: "page1",
-                  label: "页面1",
+                  path: "/page",
+                  name: "page",
+                  label: "产品管理",
                   icon: "setting",
-                  url: "page1",
+                  url: "page",
                 },
                 {
                   path: "/page2",
